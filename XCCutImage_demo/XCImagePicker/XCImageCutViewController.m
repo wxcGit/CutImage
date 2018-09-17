@@ -163,18 +163,22 @@
  */
 - (void)setCoverView
 {
-    UIView *coverView1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, _cutFrame.origin.y)];
-    UIView *coverView2 = [[UIView alloc]initWithFrame:CGRectMake(0, _cutFrame.origin.y, _cutFrame.origin.x, _cutFrame.size.height)];
-    UIView *coverView3 = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(_cutFrame), SCREEN_WIDTH, SCREEN_HEIGHT - CGRectGetMaxY(_cutFrame))];
-    UIView *coverView4 = [[UIView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_cutFrame), _cutFrame.origin.y, SCREEN_WIDTH - CGRectGetMaxX(_cutFrame), _cutFrame.size.height)];
+    CGMutablePathRef path = CGPathCreateMutableCopy([UIBezierPath bezierPathWithRect:self.view.bounds].CGPath);
     
-    coverView1.backgroundColor = coverView2.backgroundColor = coverView3.backgroundColor = coverView4.backgroundColor = _cutCoverColor;
-    coverView1.userInteractionEnabled = coverView2.userInteractionEnabled = coverView3.userInteractionEnabled = coverView4.userInteractionEnabled = NO;
+    UIBezierPath *cutBezierPath = [UIBezierPath bezierPathWithRect:_cutFrame];
+    cutBezierPath.lineWidth = self.cutBorderWidth;
     
-    [self.view addSubview:coverView1];
-    [self.view addSubview:coverView2];
-    [self.view addSubview:coverView3];
-    [self.view addSubview:coverView4];
+    CGMutablePathRef cutPath = CGPathCreateMutableCopy(cutBezierPath.CGPath);
+    CGPathAddPath(path, nil, cutPath);
+    
+    CAShapeLayer *shapeLayer = [CAShapeLayer new];
+    shapeLayer.path = path;
+    shapeLayer.fillColor = self.cutCoverColor.CGColor;
+    shapeLayer.fillRule = kCAFillRuleEvenOdd;
+    [self.view.layer addSublayer:shapeLayer];
+    
+    CGPathRelease(cutPath);
+    CGPathRelease(path);
 }
 
 /**
@@ -184,20 +188,16 @@
  */
 -(UIImage *)getCutImage{
     //算出截图位置相对图片的坐标
-    CGRect rect = [self.view convertRect:_borderView.frame toView:_showImageView];
-    CGFloat scale = [UIScreen mainScreen].scale;
+    CGRect rect = [self.view convertRect:_cutFrame toView:_showImageView];
+    CGFloat scale = _originalImage.size.width / _showImageView.frame.size.width *
+    _showImageView.transform.a;
     CGRect myImageRect= CGRectMake(rect.origin.x * scale, rect.origin.y * scale, rect.size.width * scale, rect.size.height * scale);
     
-    //截图
-    UIGraphicsBeginImageContextWithOptions(_showImageView.bounds.size, YES, scale);
-    [_showImageView.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-    CGImageRef subImageRef = CGImageCreateWithImageInRect(img.CGImage, myImageRect);
+    CGImageRef subImageRef = CGImageCreateWithImageInRect(_originalImage.CGImage, myImageRect);
     UIImage* smallImage = [UIImage imageWithCGImage:subImageRef];
     
     //释放资源
     CGImageRelease(subImageRef);
-    UIGraphicsEndImageContext();
     
     return smallImage;
 }

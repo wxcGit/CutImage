@@ -22,6 +22,7 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     _imageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"a"]];
+    _imageView.frame = CGRectMake(100, 100, 100, 100);
     _imageView.userInteractionEnabled  = YES;
     [self.view addSubview:_imageView];
     
@@ -60,12 +61,12 @@
     __weak typeof(self) wself = self;
     tool.chooseImageBlock = ^(UIImage *image){
         wself.imageView.image = image;
-        [wself.imageView sizeToFit];
+        //        [wself.imageView sizeToFit];
     };
     
     [tool showImagePickerWithPresentController:self sourceType:sourcetype allowEdit:YES cutFrame:CGRectMake(100, 100, 100, 100)];
     
-//    [tool showImagePickerWithPresentController:self sourceType:sourcetype allowEdit:YES radio:4/3.0];
+    //    [tool showImagePickerWithPresentController:self sourceType:sourcetype allowEdit:YES radio:4/3.0];
 }
 
 - (void)didReceiveMemoryWarning {

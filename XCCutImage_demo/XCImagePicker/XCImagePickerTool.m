@@ -72,7 +72,7 @@
     self.presentController = presentController;
     self.allowEdit = allowEdit;
     self.cutFrame = cutFrame;
-
+    
     _picker = [[UIImagePickerController alloc] init];
     _picker.delegate = self;
     _picker.sourceType = sourceType;
@@ -108,6 +108,8 @@
         cutVc.originalImage = image;
         cutVc.delegate = self;
         cutVc.cutFrame = self.cutFrame;
+        cutVc.cutBorderWidth = 1;
+        cutVc.cutBorderColor = [UIColor whiteColor];
         [picker pushViewController:cutVc animated:YES];
     }
 }
