@@ -85,6 +85,7 @@
         _scrollView.backgroundColor = [UIColor blackColor];
         _scrollView.showsVerticalScrollIndicator = NO;
         _scrollView.showsHorizontalScrollIndicator = NO;
+        _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         _scrollView.clipsToBounds = NO;
         _scrollView.contentInset = UIEdgeInsetsMake(_cutFrame.origin.y, _cutFrame.origin.x, SCREEN_HEIGHT - _cutFrame.origin.y - _cutFrame.size.height, SCREEN_WIDTH -  _cutFrame.origin.x - _cutFrame.size.width);
         [_scrollView addSubview:self.showImageView];
