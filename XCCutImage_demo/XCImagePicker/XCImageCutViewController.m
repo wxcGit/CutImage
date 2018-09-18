@@ -44,8 +44,6 @@
     _maxScale = 3;
     _cutBorderWidth = 0.5;
     _cutCoverColor = [UIColor colorWithWhite:0 alpha:0.3];
-    
-    self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
 - (void)viewDidLoad {
@@ -85,7 +83,11 @@
         _scrollView.backgroundColor = [UIColor blackColor];
         _scrollView.showsVerticalScrollIndicator = NO;
         _scrollView.showsHorizontalScrollIndicator = NO;
-        _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        if (@available(iOS 11.0, *)) {
+            _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        } else {
+            self.automaticallyAdjustsScrollViewInsets = NO;
+        }
         _scrollView.clipsToBounds = NO;
         _scrollView.contentInset = UIEdgeInsetsMake(_cutFrame.origin.y, _cutFrame.origin.x, SCREEN_HEIGHT - _cutFrame.origin.y - _cutFrame.size.height, SCREEN_WIDTH -  _cutFrame.origin.x - _cutFrame.size.width);
         [_scrollView addSubview:self.showImageView];
